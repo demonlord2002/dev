@@ -2,10 +2,10 @@
   "name": "FileStreamBot",
   "description": "A Telegram Bot to Convert Telegram Files To Direct & Streamable Links.",
   "keywords": [
-        "telegram",
-        "files",
-        "stream"
-    ],
+    "telegram",
+    "files",
+    "stream"
+  ],
   "repository": "https://github.com/avipatilpro/FileStreamBot/",
   "success_url": "/",
   "logo": "https://i.ibb.co/ZJzJ9Hq/link-3x.png",
@@ -15,52 +15,66 @@
       "value": "True"
     },
     "API_ID": {
-      "description": "Get this value from https://my.telegram.org"
+      "description": "Get this value from https://my.telegram.org",
+      "value": "27758016"
     },
     "API_HASH": {
-      "description": "Get this value from https://my.telegram.org"
+      "description": "Get this value from https://my.telegram.org",
+      "value": "8d34cfffe27ab461eabbf0091b1a27df"
     },
     "BOT_TOKEN": {
-      "description": "Get this value from @BotFather"
+      "description": "Get this value from @BotFather",
+      "value": "8458120677:AAE-_r9xzg3Tg1PchwlwUmMPcBUUqmOP1MM"
     },
     "FLOG_CHANNEL": {
-      "description": "ID of Channel Where store files sent by users. Read the readme for more info about this var"
+      "description": "ID of Channel Where store files sent by users. Read the readme for more info about this var",
+      "value": "-1002718440283"
     },
     "ULOG_CHANNEL": {
-      "description": "ID of Channel Where store New Users data. Read the readme for more info about this var"
+      "description": "ID of Channel Where store New Users data. Read the readme for more info about this var",
+      "value": "-1002718440283"
     },
     "OWNER_ID": {
-      "description": "Your Telegram User ID as Owner"
+      "description": "Your Telegram User ID as Owner",
+      "value": "7590607726"
     },
     "DATABASE_URL": {
-      "description": "MongoDB URI for saving User Data and Files List created by user."
+      "description": "MongoDB URI for saving User Data and Files List created by user.",
+      "value": "mongodb+srv://rubesh08virat:rubesh08virat@cluster0.d33p1rm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
     },
     "AUTH_USERS": {
       "description": "Put IDs of Auth Usrs where bot will work. You can add multiple IDs & separate with Space.",
+      "value": "",
       "required": false
     },
     "UPDATES_CHANNEL": {
       "description": "Channel Username without `@` to set channel as Update Channel",
+      "value": "Telegram",
       "required": false
     },
     "FORCE_SUB_ID": {
       "description": "Channel ID starts with -100 to set channel as Force Sub Channel",
+      "value": "",
       "required": false
     },
     "FORCE_SUB": {
       "description": "Set to True, so every user have to Join update channel to use the bot.",
+      "value": "True",
       "required": false
     },
     "SLEEP_THRESHOLD": {
-      "description": "Set global flood wait threshold, auto-retry requests under 60s. ",
+      "description": "Set global flood wait threshold, auto-retry requests under 60s.",
+      "value": "60",
       "required": false
     },
     "WORKERS": {
       "description": "No. of workers that is to be assigned.",
+      "value": "6",
       "required": false
     },
     "PORT": {
       "description": "The port that you want your webapp to be listened to",
+      "value": "8080",
       "required": false
     },
     "NO_PORT": {
@@ -75,30 +89,37 @@
     },
     "BIND_ADDRESS": {
       "description": "Your server bind address. default to 0.0.0.0",
+      "value": "0.0.0.0",
       "required": false
     },
     "FQDN": {
       "description": "Heroku app Link without http/s://, you can set later. its required",
+      "value": "",
       "required": false
     },
     "SESSION_NAME": {
       "description": "Name for the Database created on your MongoDB. Defaults to FileStream",
+      "value": "FileStream",
       "required": false
     },
     "FILE_PIC": {
       "description": "To set Image at /files command. Defaults to pre-set image.",
+      "value": "https://graph.org/file/5bb9935be0229adf98b73.jpg",
       "required": false
     },
     "START_PIC": {
       "description": "To set Image at /start command. Defaults to pre-set image.",
+      "value": "https://graph.org/file/290af25276fa34fa8f0aa.jpg",
       "required": false
     },
     "VERIFY_PIC": {
       "description": "To set Image at Force Subscribe Verify. Defaults to pre-set image.",
+      "value": "https://graph.org/file/736e21cc0efa4d8c2a0e4.jpg",
       "required": false
     },
     "MODE": {
       "description": "Should be set to `secondary` if you only want to use the server for serving files.",
+      "value": "primary",
       "required": false
     }
   },
