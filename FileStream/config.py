@@ -28,15 +28,16 @@ class Telegram:
 
 class Server:
     PORT = int(env.get("PORT", 8080))
-    BIND_ADDRESS = str(env.get("BIND_ADDRESS", "0.0.0.0"))  # Keep this for your web server
+    BIND_ADDRESS = str(env.get("BIND_ADDRESS", "0.0.0.0"))
     HAS_SSL = str(env.get("HAS_SSL", "1").lower()) in ("1", "true", "t", "yes", "y")
 
     # Heroku app name
-    HEROKU_APP_NAME = str(env.get("HEROKU_APP_NAME", "dead7"))  # Replace with your app name
+    HEROKU_APP_NAME = str(env.get("HEROKU_APP_NAME", "dead7"))  # replace with your app name
     FQDN = f"{HEROKU_APP_NAME}.herokuapp.com"
 
-    # URL for Telegram buttons (no port, Heroku auto handles it)
-    URL = f"https{'s' if HAS_SSL else ''}://{FQDN}/"
+    # Correct URL
+    URL = f"http{'s' if HAS_SSL else ''}://{FQDN}/"
+
 
 
 
