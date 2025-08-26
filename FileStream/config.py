@@ -28,18 +28,15 @@ class Telegram:
 
 class Server:
     PORT = int(env.get("PORT", 8080))
-    BIND_ADDRESS = str(env.get("BIND_ADDRESS", "0.0.0.0"))
-    PING_INTERVAL = int(env.get("PING_INTERVAL", "1200"))
     HAS_SSL = str(env.get("HAS_SSL", "1").lower()) in ("1", "true", "t", "yes", "y")
-    NO_PORT = str(env.get("NO_PORT", "0").lower()) in ("1", "true", "t", "yes", "y")
-    
-    # Use actual FQDN if provided, else fallback to a placeholder
-    FQDN = str(env.get("FQDN", "dead7.herokuapp.com"))
-    
-    # Ensure URL is always valid
-    URL = "http{}://{}{}/".format(
-        "s" if HAS_SSL else "", FQDN, "" if NO_PORT else ":" + str(PORT)
-    )
+
+    # Heroku app name
+    HEROKU_APP_NAME = str(env.get("HEROKU_APP_NAME", "dead7"))  # Replace with your app name
+    FQDN = f"{HEROKU_APP_NAME}.herokuapp.com"
+
+    # URL without port (Heroku handles it)
+    URL = f"https{'s' if HAS_SSL else ''}://{FQDN}/"
+
 
 
 
