@@ -28,7 +28,6 @@ async def status_handler(_):
         "version": __version__
     })
 
-
 # --------------------- WATCH ROUTE --------------------- #
 @routes.get("/watch/{file_id}", allow_head=True)
 async def watch_handler(request: web.Request):
@@ -43,7 +42,6 @@ async def watch_handler(request: web.Request):
     except (AttributeError, BadStatusLine, ConnectionResetError):
         pass
 
-
 # --------------------- DOWNLOAD ROUTE --------------------- #
 @routes.get("/dl/{file_id}", allow_head=True)
 async def download_handler(request: web.Request):
@@ -57,34 +55,33 @@ async def download_handler(request: web.Request):
     except (AttributeError, BadStatusLine, ConnectionResetError):
         pass
     except Exception as e:
+        logging.error(f"Download error: {e}")
         traceback.print_exc()
-        logging.critical(e.with_traceback(None))
-        logging.debug(traceback.format_exc())
         raise web.HTTPInternalServerError(text=str(e))
-
 
 # --------------------- MEDIA STREAMER --------------------- #
 async def media_streamer(request: web.Request, db_id: str):
-    range_header = request.headers.get("Range", 0)
+    range_header = request.headers.get("Range", None)
 
-    # pick the fastest bot
+    # pick the bot with lowest workload
     index = min(work_loads, key=work_loads.get)
-    faster_client = multi_clients[index]
+    client = multi_clients[index]
 
     if Telegram.MULTI_CLIENT:
         logging.info(f"Client {index} serving {request.headers.get('X-FORWARDED-FOR', request.remote)}")
 
-    if faster_client in class_cache:
-        tg_connect = class_cache[faster_client]
+    # reuse ByteStreamer object
+    if client in class_cache:
+        streamer = class_cache[client]
     else:
-        tg_connect = utils.ByteStreamer(faster_client)
-        class_cache[faster_client] = tg_connect
+        streamer = utils.ByteStreamer(client)
+        class_cache[client] = streamer
 
-    # get file info from Telegram
-    file_obj = await tg_connect.get_file_properties(db_id, multi_clients)
+    # fetch file metadata
+    file_obj = await streamer.get_file_properties(db_id, multi_clients)
     file_size = file_obj.file_size
 
-    # parse Range header
+    # parse Range header safely
     if range_header:
         try:
             from_bytes, until_bytes = range_header.replace("bytes=", "").split("-")
@@ -98,21 +95,21 @@ async def media_streamer(request: web.Request, db_id: str):
         until_bytes = file_size - 1
 
     # validate range
-    if (until_bytes > file_size) or (from_bytes < 0) or (until_bytes < from_bytes):
+    if from_bytes < 0 or until_bytes >= file_size or until_bytes < from_bytes:
         return web.Response(
             status=416,
-            body="416: Range not satisfiable",
+            body="416: Range Not Satisfiable",
             headers={"Content-Range": f"bytes */{file_size}"}
         )
 
+    # chunk setup
     chunk_size = 1024 * 1024
-    until_bytes = min(until_bytes, file_size - 1)
     offset = from_bytes - (from_bytes % chunk_size)
     first_cut = from_bytes - offset
     last_cut = until_bytes % chunk_size + 1
     part_count = math.ceil(until_bytes / chunk_size) - math.floor(offset / chunk_size)
 
-    body = tg_connect.yield_file(file_obj, index, offset, first_cut, last_cut, part_count, chunk_size)
+    body = streamer.yield_file(file_obj, index, offset, first_cut, last_cut, part_count, chunk_size)
 
     mime_type = file_obj.mime_type or mimetypes.guess_type(utils.get_name(file_obj))[0] or "application/octet-stream"
     file_name = utils.get_name(file_obj)
@@ -131,14 +128,12 @@ async def media_streamer(request: web.Request, db_id: str):
         }
     )
 
-
 # --------------------- APP RUNNER --------------------- #
 def start_server():
-    app = web.Application()
+    app = web.Application(client_max_size=300000000)  # increased max size for big files
     app.add_routes(routes)
     port = int(os.environ.get("PORT", 8080))
     web.run_app(app, host="0.0.0.0", port=port)
-
 
 if __name__ == "__main__":
     start_server()
